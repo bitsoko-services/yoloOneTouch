@@ -12,9 +12,10 @@ python3 -V
 apt-get -y install python3-pip
 pip3 install --upgrade pip
 
-
+mkdir /tflow
 cd /tflow
 #install conda
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh -b -p /root/miniconda3
 
 #bash Miniconda2-latest-Linux-x86_64.sh -b -p /root/miniconda2
