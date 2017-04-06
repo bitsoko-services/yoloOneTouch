@@ -1,2 +1,3 @@
-# bt-speak
-speech detection library for bitsoko
+# bt-ai
+machine learning library for various tasks
+
