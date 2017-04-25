@@ -27,7 +27,7 @@ fi
 
 #prepare data
 
-#python prepro.py --train_image_dir="${IMG_TRAIN_DIR}"  --val_image_dir="${IMG_VAL_DIR}"  --train_captions_file="${CAPTIONS_DIR}/val.json" --val_captions_file="${CAPTIONS_DIR}/val.json" --output_dir="${OUTPUT_DIR}/tf" --word_counts_output_file="${OUTPUT_DIR}/word_counts.txt" 
+python prepro.py --train_image_dir="${IMG_TRAIN_DIR}"  --val_image_dir="${IMG_VAL_DIR}"  --train_captions_file="${CAPTIONS_DIR}/val.json" --val_captions_file="${CAPTIONS_DIR}/val.json" --output_dir="${OUTPUT_DIR}/tf" --word_counts_output_file="${OUTPUT_DIR}/word_counts.txt" 
 
 python train.py \
   --input_file_pattern="${MSCOCO_DIR}/tf/val-?????-of-00256" \
