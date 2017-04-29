@@ -1,4 +1,4 @@
-PRETRAINED_CHECKPOINT_DIR=/tflow/tmp/checkpoints
+PRETRAINED_CHECKPOINT_DIR=tmp/checkpoints
 
 OUTPUT_DIR=output
 DATA_DIR=data
