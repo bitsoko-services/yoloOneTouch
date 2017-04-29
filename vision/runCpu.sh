@@ -10,6 +10,8 @@ IMG_VAL_DIR="${DATA_DIR}/val"
 # Where the training (fine-tuned) checkpoint and logs will be saved to.
 TRAIN_DIR=models/inception_v3
 
+apt-get install wget
+
 # Where the dataset is saved to.
 DATASET_DIR=output/dataset
 
