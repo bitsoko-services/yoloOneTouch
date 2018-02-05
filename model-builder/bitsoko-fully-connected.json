@@ -1,0 +1,1 @@
+[{"layerName":"Flatten"},{"layerName":"Fully connected","hiddenUnits":4},{"layerName":"ReLU"},{"layerName":"Fully connected","hiddenUnits":4},{"layerName":"ReLU"},{"layerName":"Fully connected","hiddenUnits":4}]
