@@ -4,7 +4,7 @@
 Tested on Ubuntu 16.04LTS, Python3  - @Bitsoko
 
 Getting started with yolo model can be a painful experience
-Especially in data preparation as yolo expects data in a certain format
+Especially in data preparation as yolo expects data in a certain format <br>
 The basic steps involved:
 1. Prepare data using labelImg <a href='https://github.com/tzutalin/labelImg'>
     labelImg</a><br>
