@@ -52,7 +52,7 @@ Contributions to the script are welcome.
 
 ## Maintainers
 
-* Mike @ BitsokoServices (https://github.com/bitsoko)
+* Mike @ BitsokoServices (https://github.com/bitsoko-services/bt-ai)
 
 
 ## Table of contents
