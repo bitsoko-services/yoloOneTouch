@@ -1,5 +1,6 @@
-
 """
+		   BITSOKO SMART INVENTORY AI CONTROLLER
+		   
            YoloOneTouch - Tested on Ubuntu 16.04LTS, Python3  - @Bitsoko
                                       ----    .    _ _ _
                                       |   |   |    |
@@ -26,12 +27,19 @@
            		$pwd
 
 """
+import os
+import glob
+import xml.etree.ElementTree as ET
+from PIL import Image
+import shutil
+import sys
+import urllib.request
 
 darknet_path = '/home/bitsoko/darknet'
-image_path = 'images'
+image_path = 'plates'
 # Directory where the data will reside, relative to './darknet'
 #also serves as your custom model name
-output_path = 'bitsoko_model'
+output_path = 'plates_model'
 #test size percentage
 percentage_test = 10
 #your gpus, i have three
@@ -42,27 +50,31 @@ weights_url = "https://pjreddie.com/media/files/darknet19_448.conv.23"
 yolo_cfg = 'yolo-obj.cfg'
 
 
-import os
-import glob
-import xml.etree.ElementTree as ET
-from PIL import Image
-import shutil
-import sys
-import urllib.request
+RUNTIME_STATUS = 'Idle'
+LABELS_COUNT = 0
+DATA_COUNT = 0
+MODEL_NAME = output_path
+
+
+
+
+def update_status(status):
+	global RUNTIME_STATUS
+	RUNTIME_STATUS = status
 
 def yolo_model_installed():
 	if not os.path.exists(darknet_path):
-		print('Yolo Darknet not installed!')
+		update_status('Yolo Darknet not installed!')
 		sys.exit()
 
 def weights_check_or_download():
 	if not os.path.exists(darknet_path+'/'+weights):
-		print('Weights not found,Downloading...')
+		update_status('Weights not found,Downloading...')
 		file_name = weights_url.split('/')[-1]
 		u = urllib.request.urlopen(weights_url)
 		f = open(darknet_path+'/'+file_name, 'wb')
 		file_size = int(u.headers["Content-Length"])
-		print ("Downloading: %s MBs: %s" % (file_name, file_size/1000000))
+		update_status ("Downloading: %s MBs: %s" % (file_name, file_size/1000000))
 		file_size_dl = 0
 		block_sz = 8192
 		while True:
@@ -78,9 +90,10 @@ def weights_check_or_download():
 
 		f.close()
 
+
 def confirm_images_path():
 	if not os.path.exists(image_path):
-	    print('Images directory not found!')
+	    update_status('Images directory not found!')
 	    sys.exit()
 
 def confirm_output_path():
@@ -103,6 +116,8 @@ def xml_reader(path):
                      int(member[4][3].text)
                      )
             xml_list.append(value)
+    global DATA_COUNT
+    DATA_COUNT = len(xml_list)
     return xml_list
 
 #yolo bboxes format
@@ -128,19 +143,21 @@ def unique_labels(xml_list):
 	for line in xml_list:
 		if line[3] not in unique_classes and line[3] != 'class':
 			unique_classes.append(line[3])
+	global LABELS_COUNT
+	LABELS_COUNT = len(unique_classes)
 	return unique_classes
 
 def to_yolo(xml_list,unique_classes):
 	for line in xml_list:
 		filename,width,height,_class,xmin,ymin,xmax,ymax = line[0],line[1],line[2],line[3],line[4],line[5],line[6],line[7]
-		print(filename,width,height,_class,xmin,ymin,xmax,ymax)
+		# print(filename,width,height,_class,xmin,ymin,xmax,ymax)
 		shutil.copy(image_path+'/'+filename, output_path+'/')
 		im = Image.open(image_path+'/'+filename)
 		w = int(im.size[0])
 		h = int(im.size[1])
 		b = (float(xmin), float(xmax), float(ymin), float(ymax))
 		bb = convert((w,h),b)
-		print(bb)
+		# print(bb)
 		save_data(filename.split('.')[0],unique_classes.index(_class),bb)
 
 
@@ -185,12 +202,23 @@ def move_to_darknet():
 	shutil.move(output_path, darknet_path)
 
 def launch_training():
+	update_status('Training...')
 	command = "./darknet detector train "+output_path+"/"+output_path+".data"+" "+output_path+"/"+output_path+".cfg"+" "+weights+" -gpus "+gpus
 	os.system("gnome-terminal -e 'bash -c \"cd "+darknet_path+" && "+command+" ; exec bash\"'")
+
+def resume_training():
+	update_status('Resumed training...')
+	command = "./darknet detector train "+output_path+"/"+output_path+".data"+" "+output_path+"/"+output_path+".cfg"+" backup/"+output_path+".backup -gpus "+gpus
+	os.system("gnome-terminal -e 'bash -c \"cd "+darknet_path+" && "+command+" ; exec bash\"'")
+
+def reload_classes():
+	pass
 
 def launch_testing():
 	print('Testing command: ',"cd "+darknet_path+" && "+"./darknet detector train "+output_path+"/"+output_path+".cfg"+" <weights>")
 	print("Weights file(s) found in ",darknet_path+"/backup")
+
+
 
 def main():
     yolo_model_installed()
